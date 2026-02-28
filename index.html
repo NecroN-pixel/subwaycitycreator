@@ -3,148 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subway Surfers City | Creator Hub</title>
+    <title>SSC Creator Hub | Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
             --primary: #f1c40f;
-            --secondary: #e74c3c;
-            --success: #2ecc71;
-            --bg-dark: #0f0f1b;
-            --card-bg: #1a1a2e;
-            --text: #ffffff;
+            --accent: #4285f4;
+            --bg: #0b0e14;
+            --card-bg: #161b22;
+            --text: #e6edf3;
+            --success: #238636;
+            --error: #da3633;
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text);
-            margin: 0;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        /* Arkaplan Aurası */
+        .aura {
+            position: fixed; inset: 0; z-index: -1;
+            background: radial-gradient(circle at top right, rgba(241, 196, 15, 0.05), transparent),
+                        radial-gradient(circle at bottom left, rgba(66, 133, 244, 0.05), transparent);
+        }
+
+        header {
+            padding: 20px 5%;
+            background: rgba(22, 27, 34, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            overflow-x: hidden;
+            position: sticky; top: 0; z-index: 100;
         }
 
-        .container {
+        .logo-area img { height: 40px; }
+
+        main { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 25px;
+        }
+
+        @media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } }
+
+        .card {
             background: var(--card-bg);
-            padding: 40px;
-            border-radius: 24px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-            max-width: 450px;
-            width: 90%;
-            text-align: center;
             border: 1px solid rgba(255,255,255,0.1);
-            position: relative;
+            border-radius: 16px;
+            padding: 30px;
+            height: 100%;
         }
 
-        .logo { width: 220px; margin-bottom: 10px; filter: drop-shadow(0 0 10px rgba(241,196,15,0.3)); }
-        
-        .character-circle {
-            width: 120px;
-            height: 120px;
-            background: radial-gradient(circle, #2e2e4e, #1a1a2e);
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 3px solid var(--primary);
-            overflow: hidden;
+        .stats-box { text-align: center; }
+        .avatar-circle {
+            width: 120px; height: 120px;
+            border-radius: 50%; border: 4px solid var(--primary);
+            margin: 0 auto 20px; overflow: hidden;
+            background: #000;
         }
+        .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
 
-        .character-circle img { width: 90%; height: auto; transition: transform 0.3s; }
-        .character-circle:hover img { transform: scale(1.1); }
-
-        h1 { font-size: 24px; margin-bottom: 10px; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; }
-        p { font-size: 14px; color: #a0a0c0; line-height: 1.6; margin-bottom: 25px; }
+        .sub-count { font-size: 3.5rem; font-weight: 800; color: var(--primary); line-height: 1; margin: 10px 0; }
+        .status-badge { display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; background: rgba(255,255,255,0.1); }
 
         .btn {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 15px;
-            margin-bottom: 10px;
+            width: 100%; padding: 16px; border-radius: 12px; border: none;
+            font-weight: 700; cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            font-size: 1rem;
         }
+        .btn-primary { background: var(--accent); color: white; margin-top: 20px; }
+        .btn-primary:hover { background: #357ae8; transform: translateY(-2px); }
+        
+        .btn-download { background: var(--success); color: white; text-decoration: none; display: none; margin-top: 20px; }
+        .btn-download:hover { background: #2ea043; }
 
-        .btn-google { background: #ffffff; color: #000; }
-        .btn-google:hover { background: #e0e0e0; transform: translateY(-2px); }
-
-        .btn-download { background: var(--success); color: white; text-decoration: none; font-size: 18px; }
-        .btn-download:hover { background: #27ae60; box-shadow: 0 5px 15px rgba(46,204,113,0.4); }
-
-        .btn-revoke { background: transparent; color: #666; border: 1px solid #333; font-size: 12px; margin-top: 20px; }
-        .btn-revoke:hover { color: var(--secondary); border-color: var(--secondary); }
-
-        .legal-warning {
-            background: rgba(231, 76, 60, 0.1);
-            border: 1px solid var(--secondary);
-            color: #ff9999;
-            padding: 15px;
-            border-radius: 12px;
-            font-size: 13px;
-            margin: 20px 0;
-            text-align: left;
+        .legal-box {
+            background: rgba(218, 54, 51, 0.1);
+            border: 1px solid var(--error);
+            padding: 20px; border-radius: 12px; margin-top: 25px;
             display: none;
-            animation: fadeIn 0.5s ease;
         }
+        .legal-box h4 { color: #ff7b72; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
 
-        #status { margin-top: 15px; font-weight: 500; min-height: 20px; }
+        #msg { margin-top: 15px; font-size: 0.9rem; text-align: center; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Loader */
+        .loader { width: 20px; height: 20px; border: 3px solid #fff; border-bottom-color: transparent; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; display: none; }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <img src="https://subwaysurferscity.com/media/fudfceks/subway_surfers_city_logotype_color_rgb_web.png" class="logo">
-        
-        <div class="character-circle">
-            <img src="https://i.ibb.co/TBmKLDvg/30370dbf-f026-439e-9333-990709001952-20260228-165802-0000.png">
-        </div>
+    <div class="aura"></div>
 
-        <div id="authSection">
-            <h1>Creator Portal</h1>
-            <p>Test dosyasına erişmek için YouTube kanalınızın doğrulanması gerekir. (Minimum 200 Abone)</p>
-            <button class="btn btn-google" id="loginBtn">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18"> Google ile Kanalı Doğrula
-            </button>
+    <header>
+        <div class="logo-area">
+            <img src="https://subwaysurferscity.com/media/fudfceks/subway_surfers_city_logotype_color_rgb_web.png" alt="Logo">
         </div>
+        <div id="user-tag" style="font-size: 0.9rem; color: #8b949e;">Creator Hub v3.0</div>
+    </header>
 
-        <div id="successSection" style="display: none;">
-            <h1 style="color: var(--success);">ERİŞİM ONAYLANDI</h1>
-            <div class="legal-warning" id="warningBox">
-                <strong>⚖️ YASAL TAKİP UYARISI:</strong><br>
-                Bu dosya size özel dijital izle mühürlenmiştir. Paylaşılması veya sızdırılması durumunda sistemdeki kimlik bilgilerinizle doğrudan <strong>Yasal Mahkemeye</strong> başvurulacaktır.
+    <main>
+        <div class="dashboard-grid">
+            <div class="card">
+                <h2 style="margin-bottom: 20px;">Creator Programına Hoş Geldin!</h2>
+                <p style="color: #8b949e; margin-bottom: 20px;">Subway Surfers City test hesaplarına erişmek için YouTube kanalınızın topluluğumuzla uyumlu olması gerekir. En az 200 abone şartını sağlayan tüm içerik üreticileri dosyaları anında indirebilir.</p>
+                <img src="https://i.ibb.co/TBmKLDvg/30370dbf-f026-439e-9333-990709001952-20260228-165802-0000.png" style="width: 100%; max-width: 300px; display: block; margin: 0 auto; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));">
             </div>
-            <a href="https://www.mediafire.com/file/btcligzbmwg3pz0/creator2.0.1.zip/file" class="btn btn-download" id="dlBtn">
-                📥 TEST DOSYASINI İNDİR
-            </a>
-            <button class="btn btn-revoke" id="revokeBtn">Hesap Bağlantısını Kes ve Kaydı Sil</button>
-        </div>
 
-        <div id="status"></div>
-    </div>
+            <div class="card stats-box">
+                <div class="avatar-circle">
+                    <img id="u-avatar" src="https://www.gstatic.com/identity/boq/profilepixel/images/placeholder_export.png">
+                </div>
+                <h3 id="u-name">Kanal Bekleniyor</h3>
+                <div class="sub-count" id="u-subs">0</div>
+                <div class="status-badge" id="u-status">Doğrulama Gerekli</div>
+
+                <button class="btn btn-primary" id="loginBtn">
+                    <span class="loader" id="loader"></span>
+                    <i class="fab fa-google"></i> Google ile Doğrula
+                </button>
+
+                <div id="msg"></div>
+
+                <div class="legal-box" id="legalBox">
+                    <h4><i class="fas fa-gavel"></i> YASAL UYARI</h4>
+                    <p style="font-size: 0.8rem; color: #ff7b72;">Bu panelden indirilen dosyalar dijital olarak imzalanmıştır. Dosyaların sızdırılması durumunda YouTube kanal verileriniz üzerinden yasal işlem başlatılacaktır.</p>
+                </div>
+
+                <a href="https://www.mediafire.com/file/btcligzbmwg3pz0/creator2.0.1.zip/file" class="btn btn-download" id="dlBtn">
+                    <i class="fas fa-download"></i> TEST DOSYASINI İNDİR
+                </a>
+
+                <button class="btn" id="logoutBtn" style="background:transparent; color:#555; font-size:0.8rem; margin-top:10px; display:none;">Hesap Bağlantısını Kes</button>
+            </div>
+        </div>
+    </main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
+        // Senin verdiğin güncel API ve Firebase bilgileri
         const firebaseConfig = {
-            apiKey: "AIzaSyCL4JJT6AxI7NKI39plPP1PbgGXLAiOUwI",
-            authDomain: "subwaycitycreator.firebaseapp.com",
-            projectId: "subwaycitycreator",
-            storageBucket: "subwaycitycreator.firebasestorage.app",
-            messagingSenderId: "365586552995",
-            appId: "1:365586552995:web:253404fa6f32701f844716"
+            apiKey: "AIzaSyAzyMRYO6GjUpqTtKP9iY747U9P0QHIBN8",
+            authDomain: "ytsayac-9efe7.firebaseapp.com",
+            projectId: "ytsayac-9efe7",
+            databaseURL: "https://ytsayac-9efe7-default-rtdb.firebaseio.com"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -152,84 +161,69 @@
         const provider = new GoogleAuthProvider();
         provider.addScope('https://www.googleapis.com/auth/youtube.readonly');
 
-        const elements = {
-            loginBtn: document.getElementById('loginBtn'),
-            status: document.getElementById('status'),
-            authSec: document.getElementById('authSection'),
-            successSec: document.getElementById('successSection'),
-            warning: document.getElementById('warningBox'),
-            revokeBtn: document.getElementById('revokeBtn'),
-            dlBtn: document.getElementById('dlBtn')
+        const dom = {
+            login: document.getElementById('loginBtn'),
+            logout: document.getElementById('logoutBtn'),
+            loader: document.getElementById('loader'),
+            name: document.getElementById('u-name'),
+            subs: document.getElementById('u-subs'),
+            avatar: document.getElementById('u-avatar'),
+            status: document.getElementById('u-status'),
+            msg: document.getElementById('msg'),
+            legal: document.getElementById('legalBox'),
+            dl: document.getElementById('dlBtn')
         };
 
-        // İndirme kaydını kontrol et (Local sistem kaydı)
-        let hasDownloaded = localStorage.getItem('ssc_downloaded') === 'true';
+        dom.login.addEventListener('click', async () => {
+            dom.loader.style.display = 'inline-block';
+            dom.msg.innerText = "Bağlanıyor...";
 
-        function updateUI(isSuccess, msg = "", color = "#fff") {
-            elements.status.innerHTML = msg;
-            elements.status.style.color = color;
-            if (isSuccess) {
-                elements.authSec.style.display = "none";
-                elements.successSec.style.display = "block";
-                elements.warning.style.display = "block";
-            } else {
-                elements.authSec.style.display = "block";
-                elements.successSec.style.display = "none";
-            }
-        }
-
-        elements.loginBtn.addEventListener('click', async () => {
             try {
                 const result = await signInWithPopup(auth, provider);
                 const credential = GoogleAuthProvider.credentialFromResult(result);
                 const token = credential.accessToken;
 
-                // İzin (Scope) kontrolü: Kullanıcı tik atmayı unuttuysa tekrar iste
-                if (!result._tokenResponse.oauthScope.includes('youtube.readonly')) {
-                    updateUI(false, "⚠️ Lütfen YouTube kanal bilgilerini görüntüleme iznini işaretleyin!", "#f1c40f");
-                    return;
-                }
-
-                const response = await fetch('https://www.googleapis.com/youtube/v3/channels?part=statistics&mine=true', {
+                // YouTube Verisi Çekme
+                const response = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet&mine=true`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await response.json();
 
                 if (data.items && data.items.length > 0) {
-                    const subs = parseInt(data.items[0].statistics.subscriberCount);
-                    if (subs >= 200) {
-                        updateUI(true, `Doğrulandı: ${subs} Abone`, "#2ecc71");
+                    const channel = data.items[0];
+                    const subCount = parseInt(channel.statistics.subscriberCount);
+
+                    // Arayüzü Güncelle
+                    dom.name.innerText = channel.snippet.title;
+                    dom.avatar.src = channel.snippet.thumbnails.high.url;
+                    dom.subs.innerText = subCount.toLocaleString();
+
+                    if (subCount >= 200) {
+                        dom.status.innerText = "ERİŞİM ONAYLANDI";
+                        dom.status.style.background = "var(--success)";
+                        dom.login.style.display = "none";
+                        dom.dl.style.display = "flex";
+                        dom.legal.style.display = "block";
+                        dom.logout.style.display = "block";
+                        dom.msg.innerText = "";
                     } else {
-                        updateUI(false, `❌ Yetersiz Abone: ${subs}/200`, "#e74c3c");
+                        dom.status.innerText = "YETERSİZ ABONE";
+                        dom.status.style.background = "var(--error)";
+                        dom.msg.innerHTML = `Erişim için en az 200 abone gerekir. Mevcut: ${subCount}`;
                     }
                 } else {
-                    updateUI(false, "❌ Kanal bulunamadı. Lütfen bir YouTube kanalı oluşturun.", "#e74c3c");
+                    dom.msg.innerText = "Kanal verisi alınamadı.";
                 }
             } catch (error) {
-                updateUI(false, "Bağlantı hatası oluştu.");
+                console.error(error);
+                dom.msg.innerText = "Bağlantı Hatası: Lütfen API izinlerini ve internetinizi kontrol edin.";
+            } finally {
+                dom.loader.style.display = 'none';
             }
         });
 
-        // İndirme yapıldığında sistem kaydı bırak
-        elements.dlBtn.addEventListener('click', () => {
-            localStorage.setItem('ssc_downloaded', 'true');
-            hasDownloaded = true;
-            console.log("Kullanıcı dosyayı indirdi, yasal takip sistemi aktif.");
-        });
-
-        // İzinleri geri al / Hesabı Sil
-        elements.revokeBtn.addEventListener('click', async () => {
-            if (confirm("Hesap bağlantınızı kesmek istediğinize emin misiniz?")) {
-                await signOut(auth);
-                
-                let msg = "Bağlantı kesildi.";
-                if (localStorage.getItem('ssc_downloaded') === 'true') {
-                    msg += " (Not: Dosya indirildiği için yasal kayıtlarımız saklanmaktadır.)";
-                }
-                
-                alert(msg);
-                location.reload();
-            }
+        dom.logout.addEventListener('click', () => {
+            signOut(auth).then(() => location.reload());
         });
     </script>
 </body>
