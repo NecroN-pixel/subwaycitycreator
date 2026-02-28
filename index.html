@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subway Surfers City Creator Portal</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1a2e;
+            color: #ffffff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #16213e;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 500px;
+            width: 90%;
+        }
+        .logo {
+            max-width: 250px;
+            margin-bottom: 20px;
+        }
+        .character {
+            max-width: 150px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        h1 {
+            font-size: 22px;
+            color: #f1c40f;
+        }
+        button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+        button:hover {
+            background-color: #c0392b;
+        }
+        .warning-box {
+            background-color: #ffcccc;
+            color: #c0392b;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #e74c3c;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            display: none;
+        }
+        .download-btn {
+            background-color: #2ecc71;
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 15px;
+            font-size: 18px;
+        }
+        .download-btn:hover {
+            background-color: #27ae60;
+        }
+        #resultMessage {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <img src="https://subwaysurferscity.com/media/fudfceks/subway_surfers_city_logotype_color_rgb_web.png" alt="Subway Surfers City Logo" class="logo">
+        <br>
+        <img src="https://i.ibb.co/TBmKLDvg/30370dbf-f026-439e-9333-990709001952-20260228-165802-0000.png" alt="Creator Character" class="character">
+
+        <h1>Creator Test Hesabı Erişimi</h1>
+        <p>Dosyayı indirmek için YouTube hesabınızla giriş yapın (En az 200 abone gereklidir).</p>
+
+        <button id="loginBtn">🌐 Google (YouTube) ile Giriş Yap</button>
+
+        <div id="resultMessage"></div>
+
+        <div id="successArea" style="display: none;">
+            <div class="warning-box" id="warningBox">
+                ⚠️ DİKKAT: YASAL UYARI ⚠️<br>
+                Bu test hesabı dosyası yalnızca size özel olarak tahsis edilmiştir. Dosyayı başkalarıyla paylaşmanız, sızdırmanız veya dağıtmanız durumunda hakkınızda yasal işlem başlatılacak ve mahkemeye verileceksiniz.
+            </div>
+            <a href="https://www.mediafire.com/file/btcligzbmwg3pz0/creator2.0.1.zip/file" target="_blank" class="download-btn">⬇️ Test Dosyasını İndir</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-analytics.js";
+
+        // Senin Firebase Yapılandırman
+        const firebaseConfig = {
+            apiKey: "AIzaSyCL4JJT6AxI7NKI39plPP1PbgGXLAiOUwI",
+            authDomain: "subwaycitycreator.firebaseapp.com",
+            projectId: "subwaycitycreator",
+            storageBucket: "subwaycitycreator.firebasestorage.app",
+            messagingSenderId: "365586552995",
+            appId: "1:365586552995:web:253404fa6f32701f844716",
+            measurementId: "G-Q3V086XX2L"
+        };
+
+        // Firebase'i Başlat
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+        
+        // YouTube verilerini okumak için gereken izin (Scope)
+        provider.addScope('https://www.googleapis.com/auth/youtube.readonly');
+
+        const loginBtn = document.getElementById('loginBtn');
+        const resultMessage = document.getElementById('resultMessage');
+        const successArea = document.getElementById('successArea');
+        const warningBox = document.getElementById('warningBox');
+
+        loginBtn.addEventListener('click', () => {
+            resultMessage.innerHTML = "Giriş yapılıyor ve kanal analiz ediliyor... Lütfen bekleyin.";
+            resultMessage.style.color = "#f1c40f";
+            successArea.style.display = "none";
+
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    // Google Access Token'ı alıyoruz
+                    const credential = GoogleAuthProvider.credentialFromResult(result);
+                    const token = credential.accessToken;
+
+                    // OAuth 2.0 Access Token ile kişinin kendi kanalını (mine=true) sorguluyoruz
+                    fetch('https://www.googleapis.com/youtube/v3/channels?part=statistics&mine=true', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.items && data.items.length > 0) {
+                            const subscriberCount = parseInt(data.items[0].statistics.subscriberCount);
+                            
+                            if (subscriberCount > 200) {
+                                // 200 aboneden fazlaysa
+                                loginBtn.style.display = "none";
+                                resultMessage.innerHTML = `✅ Başarılı! Doğrulanan Abone: ${subscriberCount}`;
+                                resultMessage.style.color = "#2ecc71";
+                                successArea.style.display = "block";
+                                warningBox.style.display = "block";
+                            } else {
+                                // 200 aboneden azsa
+                                resultMessage.innerHTML = `❌ Üzgünüz, bu dosyaya erişmek için en az 200 aboneniz olmalıdır. Mevcut Abone: ${subscriberCount}`;
+                                resultMessage.style.color = "#e74c3c";
+                            }
+                        } else {
+                            resultMessage.innerHTML = "❌ Bir YouTube kanalı bulunamadı.";
+                            resultMessage.style.color = "#e74c3c";
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resultMessage.innerHTML = "❌ Kanal verileri alınırken bir hata oluştu.";
+                        resultMessage.style.color = "#e74c3c";
+                    });
+
+                }).catch((error) => {
+                    console.error(error);
+                    resultMessage.innerHTML = "❌ Giriş iptal edildi veya bir hata oluştu. Lütfen pop-up engelleyicinizi kontrol edin.";
+                    resultMessage.style.color = "#e74c3c";
+                });
+        });
+    </script>
+</body>
+</html>
